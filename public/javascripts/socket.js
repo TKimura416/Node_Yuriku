@@ -1,10 +1,11 @@
 /*
  * WebSocket
  */
+
+var socket = io.connect();
 function initSocket(callback) {
 	var watchFlg = false;
 	if(navigator.geolocation){
-	        var socket = io.connect();
 
 	        // "member-geoイベントを受信したら、その内容を表示する
 	        socket.on('member-geo', function(data, fn) {
@@ -24,14 +25,14 @@ function initSocket(callback) {
 
 	        // 自分の位置をサーバへ送信する
 	        $('#btn').on('click', function() {
-			emit_login(socket);
+			emit_login();
 			watchFlg = true;
 	        });
 
 		navigator.geolocation.watchPosition(function(pos) {
 			if(watchFlg){
 				watchMarker(pos);
-				emit_login(socket);
+				emit_login();
 			}
 		});
 	} else {
@@ -43,7 +44,7 @@ function initSocket(callback) {
 	}
 }
 
-function emit_login(socket){
+function emit_login(){
 	var name = $('#cocoName').val() || '名無しのゴンベさん';
 	var data;
 	var publicFlg = false;

@@ -58,6 +58,7 @@ $(function () {
 	// メニュー：選択
 	$('div.menu li.item').click(function () {
 		$(this).toggleClass('on').toggleClass('off');
+		emit_login();		
 	});
 });
 
