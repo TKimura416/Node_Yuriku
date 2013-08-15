@@ -5,41 +5,62 @@
 <title><%= title %></title>
 <link rel="stylesheet" href="/stylesheets/style.css" />
 <link rel="stylesheet" href="/stylesheets/style_portrait.css" />
+<link rel="stylesheet" href="/stylesheets/menu.css" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCW8z6OyEs30ngb3S1o5cgW0g3x2e5POQU&sensor=true"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/map.js"></script>
 <script src="/javascripts/socket.js"></script>
+</head>
+<body>
+	<div class="welcome">
+		<div>
+			<h1>アナタドコ？<br>イマココ？<br>ミンナドコ？</h1>
+			<p>Welcome to <%= title %></p>
+			<div id='disp'>
+				<input type="text" id="cocoName" value="" placeholder="名前を入れてください">
+				<input type='button', id='btn', value='OK'>
+			</div>
+		</div>
+	</div>
+	<div class="menu">
+		<ul>
+			<li id="menuClose">メニューを閉じる</li>
+			<li id="route" class="off">経路を表示</li>
+			<li id="myself" class="on">自分を表示する</li>
+			<li>fuga</li>
+		</ul>
+	</div>
+	<div id="map_canvas"></div>
 <script>
-$(function() {
+$(function () {
+	// 地図とソケットを初期化
 	if(navigator.geolocation){
-		initMap();
+		initMap(doClickMap);
 		initSocket();
 	} else {
 		window.alert("対応外");
 	}
-});
-</script>
-</head>
-<body>
-	<div class="welcome">
-		<h1><%= title %></h1>
-		<p>Welcome to <%= title %></p>
-		<div id='disp'></div>
-		<input type='button', id='btn', value='message'>
-		<input type="text" id="cocoName" value="私はここです">
-	</div>
 
-	<div id="map_canvas"></div>
-<script>
-$(function () {
+	// Welcomeボタンイベント
 	$('#btn').click(function(e) {
 		var div = $('div.welcome').addClass('opacity0');
 		setTimeout(function() {
 			div.addClass('hide');
 		}, 500);
 	});
+
+	// メニュー：閉じる
+	$('#menuClose').click(function() {
+		$('div.menu').removeClass('menuIn');
+	});
 });
+
+// mapクリックイベント
+function doClickMap(e) {
+	var menu = $('div.menu');
+	menu.addClass('menuIn');
+}
 </script>
 </body>
 </html>

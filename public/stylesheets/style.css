@@ -30,15 +30,25 @@ div.welcome {
 	width: 100%;
 	height: 100%;
 	z-index: 99;
-	background: rgba(0, 0, 0, .5);
+	background: rgba(0, 0, 0, .8);
 	-webkit-transition: all .5s ease-in-out;
 	-moz-transition: all .5s ease-in-out;
 	-o-transition: all .5s ease-in-out;
 	transition: all .5s ease-in-out;
-	display: table-cell;
-	vertical-align: middle;
 }
 
+div.welcome h1 {
+	color: white;
+}
+
+div.welcome input {
+	height: 50px;
+	font-size: large;
+}
+
+#btn {
+	width: 80px;
+}
 
 div#map_canvas {
 	width: 100%;

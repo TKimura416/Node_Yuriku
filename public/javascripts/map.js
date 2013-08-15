@@ -4,7 +4,7 @@
 var map;
 var currentLatLng;
 var markerArray = [];
-function initMap(callback) {
+function initMap(clickEvent, callback) {
 
 	// 現在地取得
 	var positionOptions = {
@@ -21,6 +21,11 @@ function initMap(callback) {
 	                        mapTypeId: google.maps.MapTypeId.ROADMAP
 	        }
 	        map = new google.maps.Map($('#map_canvas')[0], mapOptions);
+
+		// イベント登録
+		if (clickEvent) {
+			google.maps.event.addListener(map, 'click', clickEvent);
+		}
 
 		currentLatLng = latlng;
 /*
