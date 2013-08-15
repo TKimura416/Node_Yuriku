@@ -35,7 +35,10 @@ div.welcome {
 	-moz-transition: all .5s ease-in-out;
 	-o-transition: all .5s ease-in-out;
 	transition: all .5s ease-in-out;
+	display: table-cell;
+	vertical-align: middle;
 }
+
 
 div#map_canvas {
 	width: 100%;
