@@ -25,8 +25,6 @@ function initMap(clickEvent, callback) {
 		if (clickEvent) {
 			google.maps.event.addListener(map, 'click', clickEvent);
 		}
-
-		currentLatLng = latlng;
 	});
 
 	if (callback) {
