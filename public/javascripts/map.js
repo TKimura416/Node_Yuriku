@@ -11,13 +11,12 @@ function initMap(clickEvent, callback) {
 	                enableHighAccuracy: true
 	}
 	navigator.geolocation.getCurrentPosition(function(pos) {
-	        var latlng = new google.maps.LatLng(
-	                pos.coords.latitude, pos.coords.longitude);
-
+		// 位置情報をcurrentLatLngへ読み込み
+		watchMarker(pos);
 	        // google map 読み込み
 	        var mapOptions = {
 	                        zoom: 13,
-	                        center: latlng,
+	                        center: currentLatLng,
 	                        mapTypeId: google.maps.MapTypeId.ROADMAP
 	        }
 	        map = new google.maps.Map($('#map_canvas')[0], mapOptions);
@@ -28,16 +27,6 @@ function initMap(clickEvent, callback) {
 		}
 
 		currentLatLng = latlng;
-/*
-	        var marker = new google.maps.Marker({
-	                        position: latlng,
-	                        map: map,
-				title: '自分',
-	                        draggable: true
-	        });
-	        markerArray.push(marker);
-*/
-		//addMarker(latlng);
 	});
 
 	if (callback) {
@@ -70,4 +59,12 @@ function clearMarker() {
 	});
 	markerArray = new Array();
 
+}
+
+function watchMarker(pos) {
+	// 現在位置をcurrentLatLngへ読みこみ
+	var latlng = new google.maps.LatLng(
+		pos.coords.latitude, pos.coords.longitude);
+
+	currentLatLng = latlng;
 }
