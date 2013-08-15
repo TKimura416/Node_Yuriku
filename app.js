@@ -12,7 +12,7 @@ var path = require('path');
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || 3010);
+app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.favicon());
@@ -42,10 +42,12 @@ io.sockets.on('connection', function (socket) {
 	// 'login'イベントを受信する
 	socket.on('login',function(data) {
 		console.log('log: login received');
-		console.log('name=[' + data.name + ' latlng=[' + data.latlng + ']');
+		if(data){
+			console.log('name=[' + data.name + ' latlng=[' + data.latlng + ']');
 
-		// userlistに位置情報を追加
-		socket.set('data', {name: data.name, latlng: data.latlng});
+			// userlistに位置情報を追加
+			socket.set('data', {name: data.name, latlng: data.latlng});
+		}
 
 		var userlist = new Array();
 		var i = 0

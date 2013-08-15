@@ -31,6 +31,7 @@ function initSocket(callback) {
 		navigator.geolocation.watchPosition(function(pos) {
 			if(watchFlg){
 				watchMarker(pos);
+				emit_login(socket);
 			}
 		});
 	} else {
@@ -44,5 +45,20 @@ function initSocket(callback) {
 
 function emit_login(socket){
 	var name = $('#cocoName').val() || '名無しのゴンベさん';
-	 socket.emit("login", {name: name, latlng: currentLatLng})
+	var data;
+	var publicFlg = false;
+	
+	//自分の公開設定を確認
+	if($('div.menu li#myself.on')[0]){
+		publicFlg = true;
+	}
+
+	// 公開設定になっていたらデータを送信
+	// そうでなければundefinedを送信
+	if (publicFlg){	
+		data = {name: name, latlng: currentLatLng};
+	} else {
+		data = undefined;
+	}
+	socket.emit("login", data)
 }
