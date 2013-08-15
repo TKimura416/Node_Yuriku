@@ -1,0 +1,81 @@
+div.menu {
+	position: absolute;
+	background: rgba(0, 0, 0, .8);
+	color: white;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 0%;
+	height: 100%;
+	z-index: 50;
+	-webkit-transition: all .5s ease-in-out;
+	-moz-transition: all .5s ease-in-out;
+	-o-transition: all .5s ease-in-out;
+	transition: all .5s ease-in-out;
+}
+
+div.menuIn {
+	width: 80%;
+}
+
+div.menu li {
+	width: 100%;
+	font-size: 2em;
+	-webkit-transition: all .5s ease-in-out;
+	-moz-transition: all .5s ease-in-out;
+	-o-transition: all .5s ease-in-out;
+	transition: all .5s ease-in-out;
+	padding: 5px;
+	border-top: 1px solid #666666;
+	border-bottom: 1px solid #555555;
+}
+
+div.menu li:first-child {
+	border-top: 0px;
+}
+div.menu li:last-child {
+	border-bottom: 0px;
+}
+
+div.menu li:hover {
+	color: black;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(1.00, #ff7400), color-stop(0.00, #ffa443));
+	background: -webkit-linear-gradient(#ffa443, #ff7400);
+	background: -moz-linear-gradient(#ffa443, #ff7400);
+	background: -o-linear-gradient(#ffa443, #ff7400);
+	background: -ms-linear-gradient(#ffa443, #ff7400);
+	background: linear-gradient(#ffa443, #ff7400);
+}
+
+div.menu li:before {
+	width: 20px;
+	height: 100%;
+	color: black;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+}
+
+div.menu li.off:before {
+	content: 'off';
+	background: rgba(200,200,200,1);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(1.00, #A0A0A0), color-stop(0.00, #C0C0C0));
+	background: -webkit-linear-gradient(#C0C0C0, #A0A0A0);
+	background: -moz-linear-gradient(#C0C0C0, #A0A0A0);
+	background: -o-linear-gradient(#C0C0C0, #A0A0A0);
+	background: -ms-linear-gradient(#C0C0C0, #A0A0A0);
+	background: linear-gradient(#C0C0C0, #A0A0A0);
+
+}
+
+div.menu li.on:before {
+	content: 'on';
+	background: rgba(100,255,100,1);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(1.00, #55AA55), color-stop(0.00, #99FF99));
+	background: -webkit-linear-gradient(#99FF99, #55AA55);
+	background: -moz-linear-gradient(#99FF99, #55AA55);
+	background: -o-linear-gradient(#99FF99, #55AA55);
+	background: -ms-linear-gradient(#99FF99, #55AA55);
+	background: linear-gradient(#99FF99, #55AA55);
+}
+

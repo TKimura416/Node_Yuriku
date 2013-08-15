@@ -25,9 +25,9 @@
 	</div>
 	<div class="menu">
 		<ul>
-			<li id="menuClose">メニューを閉じる</li>
-			<li id="route" class="off">経路を表示</li>
-			<li id="myself" class="on">自分を表示する</li>
+			<li id="menuClose" class="">メニューを閉じる</li>
+			<li id="route" class="item off">経路を表示</li>
+			<li id="myself" class="item on">自分を表示する</li>
 			<li>fuga</li>
 		</ul>
 	</div>
@@ -53,6 +53,11 @@ $(function () {
 	// メニュー：閉じる
 	$('#menuClose').click(function() {
 		$('div.menu').removeClass('menuIn');
+	});
+
+	// メニュー：選択
+	$('div.menu li.item').click(function () {
+		$(this).toggleClass('on').toggleClass('off');
 	});
 });
 
