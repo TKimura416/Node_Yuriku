@@ -2,6 +2,7 @@
  * WebSocket
  */
 function initSocket(callback) {
+	var watchFlg = false;
 	if(navigator.geolocation){
 	        var socket = io.connect();
 
@@ -23,10 +24,15 @@ function initSocket(callback) {
 
 	        // 自分の位置をサーバへ送信する
 	        $('#btn').on('click', function() {
-			var name = $('#cocoName').val() || '名無しのゴンベさん';
-	                socket.emit("login", {name: name, latlng: currentLatLng})
+			emit_login(socket);
+			watchFlg = true;
 	        });
 
+		navigator.geolocation.watchPosition(function(pos) {
+			if(watchFlg){
+				watchMarker(pos);
+			}
+		});
 	} else {
 	        window.alert("対応外");
 	}
@@ -36,4 +42,7 @@ function initSocket(callback) {
 	}
 }
 
-
+function emit_login(socket){
+	var name = $('#cocoName').val() || '名無しのゴンベさん';
+	 socket.emit("login", {name: name, latlng: currentLatLng})
+}
