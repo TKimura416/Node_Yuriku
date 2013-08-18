@@ -3,6 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width">
 <title><%= title %></title>
+<link rel="stylesheet" href="/stylesheets/font.css" />
 <link rel="stylesheet" href="/stylesheets/style.css" />
 <link rel="stylesheet" href="/stylesheets/style_portrait.css" />
 <link rel="stylesheet" href="/stylesheets/menu.css" />
@@ -14,8 +15,11 @@
 </head>
 <body>
 	<div class="welcome">
+		<div class="header">
+			<h1>IMA-COKO</h1>
+		</div>
 		<div>
-			<h1>アナタドコ？<br>イマココ？<br>ミンナドコ？</h1>
+			<h2>アナタドコ？<br>イマココ<br>ミンナドコ？</h2>
 			<p>Welcome to <%= title %></p>
 			<div id='disp'>
 				<input type="text" id="cocoName" value="" placeholder="名前を入れてください">
@@ -58,6 +62,7 @@ $(function () {
 	// メニュー：選択
 	$('div.menu li.item').click(function () {
 		$(this).toggleClass('on').toggleClass('off');
+		emit_login();
 	});
 });
 

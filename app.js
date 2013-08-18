@@ -47,6 +47,8 @@ io.sockets.on('connection', function (socket) {
 
 			// userlistに位置情報を追加
 			socket.set('data', {name: data.name, latlng: data.latlng});
+		} else {
+			socket.set('data', data);
 		}
 
 		var userlist = new Array();
