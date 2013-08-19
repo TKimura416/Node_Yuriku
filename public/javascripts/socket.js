@@ -21,6 +21,9 @@ function initSocket(callback) {
 			data.forEach(function(d){
 				addMarker(d.name, d.latlng);
 			});
+
+			// 接続者リストを初期化
+			initMemberList(data);
 	        });
 
 	        // 自分の位置をサーバへ送信する

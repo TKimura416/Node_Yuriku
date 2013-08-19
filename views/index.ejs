@@ -95,6 +95,24 @@ function doClickMap(e) {
 	var menu = $('div.menu');
 	menu.toggleClass('menuIn');
 }
+
+// 接続者リストをクリア
+function clearMemberList() {
+	$('div.menu_list').html('<p>接続者リスト</p>');
+}
+
+// 接続者リストを初期化
+function initMemberList(data) {
+	clearMemberList();
+	var list = $('div.menu_list').append('<ul></ul>');
+	data.forEach(addMember);
+}
+
+// 接続者リストを追加
+function addMember(data) {
+	$('div.menu_list ul').append('<li>' + data.name + '</li>');
+}
+
 </script>
 </body>
 </html>
