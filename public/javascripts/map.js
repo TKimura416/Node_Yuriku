@@ -33,6 +33,10 @@ function initMap(clickEvent, callback) {
 }
 
 function addMarker(name, latlng) {
+	if (!latlng || !latlng.mb || !latlng.nb) {
+		return;
+	}
+
 	var infoWindow = new google.maps.InfoWindow({
 		content: '<div>'+ name +'</div>'
 	});

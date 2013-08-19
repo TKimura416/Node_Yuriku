@@ -25,6 +25,13 @@
 				<input type="text" id="cocoName" value="" placeholder="名前を入れてください">
 				<input type='button', id='btn', value='OK'>
 			</div>
+			<div>
+				<p>更新履歴：</p>
+				<table border="0">
+					<tr><td>8/15></td><td>サービスイン</td></tr>
+					<tr><td>8/19></td><td>接続者リストを表示、+bugfix</td></tr>
+				</table>
+			</div>
 		</div>
 	</div>
 	<div class="menu">
@@ -52,11 +59,11 @@
 		</div>
 		<div class="menu_list">
 			<p>接続者リスト</p>
-			<ul>
-				<li>接続者</li>
-				<li>接続者</li>
-				<li>接続者</li>
-			</ul>
+			<div class="inner">
+				<ul>
+					<li>接続者</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 	<div id="map_canvas"></div>
@@ -98,13 +105,13 @@ function doClickMap(e) {
 
 // 接続者リストをクリア
 function clearMemberList() {
-	$('div.menu_list').html('<p>接続者リスト</p>');
+	$('div.menu_list').html('<p>接続者リスト</p><div></div>');
 }
 
 // 接続者リストを初期化
 function initMemberList(data) {
 	clearMemberList();
-	var list = $('div.menu_list').append('<ul></ul>');
+	var list = $('div.menu_list div').append('<ul></ul>');
 	data.forEach(addMember);
 }
 

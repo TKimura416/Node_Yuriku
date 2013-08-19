@@ -32,6 +32,7 @@ div.welcome {
 	z-index: 99;
 	//background: white;
 	background: rgba(0, 0, 0, .8);
+	color: white;
         //background: -webkit-gradient(linear, left top, left bottom, color-stop(1.00, #000000), color-stop(0.00, #FFFFFF));
         //background: -webkit-linear-gradient(#ffffff, #000000);
         //background: -moz-linear-gradient(#C0C0C0, #A0A0A0);
@@ -52,12 +53,13 @@ div.welcome .header {
 
 div.welcome h1 {
 	padding-top: 10px;
-	color: white;
-	//color: black;
 }
 div.welcome h2 {
 	padding-top: 10px;
-	color: white;
+}
+
+div.welcome div {
+	margin-bottom: 30px;
 }
 
 div.welcome input {

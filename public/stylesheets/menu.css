@@ -25,6 +25,17 @@ div.menu div.menu_setting {
 	border-bottom: 5px groove rgba(100,200,255,.3);
 }
 
+div.menu div.menu_list {
+	width: 100%;
+	height: 50%;
+}
+div.menu div.menu_list div {
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	padding-right: 30px;
+}
+
 div.menu li {
 	width: 100%;
 	font-size: 2em;
