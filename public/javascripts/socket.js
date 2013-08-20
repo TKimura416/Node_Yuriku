@@ -3,7 +3,7 @@
  */
 
 var socket = io.connect();
-function initSocket(callback) {
+function initSocket(onsuccess, onerror) {
 	var watchFlg = false;
 	if(navigator.geolocation){
 
@@ -32,18 +32,32 @@ function initSocket(callback) {
 			watchFlg = true;
 	        });
 
-		navigator.geolocation.watchPosition(function(pos) {
-			if(watchFlg){
-				watchMarker(pos);
-				emit_login();
-			}
-		});
+		var options = {
+			enableHighAccuracy: true,
+			timeout: 3000,
+			maximumAge: 1000
+		};
+		navigator.geolocation.watchPosition(
+			function (pos) {
+				if(watchFlg){
+					watchMarker(pos);
+					emit_login();
+				}
+				if (onsuccess) {
+					onsuccess(pos);
+				}
+			},
+			function (e) {
+				if (onerror) {
+					onerror(e);
+				} else if (console) {
+					console.log(e.code + " " + e.message);
+				}
+			},
+			options
+		);
 	} else {
 	        window.alert("対応外");
-	}
-
-	if (callback) {
-		callback();
 	}
 }
 

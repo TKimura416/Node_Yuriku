@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/stylesheets/style_portrait.css" />
 <link rel="stylesheet" href="/stylesheets/menu.css" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCW8z6OyEs30ngb3S1o5cgW0g3x2e5POQU&sensor=true"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCW8z6OyEs30ngb3S1o5cgW0g3x2e5POQU&sensor=true&language=ja"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/map.js"></script>
 <script src="/javascripts/socket.js"></script>
@@ -27,9 +27,10 @@
 			</div>
 			<div>
 				<p>更新履歴：</p>
-				<table border="0">
-					<tr><td>8/15></td><td>サービスイン</td></tr>
-					<tr><td>8/19></td><td>接続者リストを表示、+bugfix</td></tr>
+				<table border="1">
+					<tr><td>8/15</td><td>サービスイン</td></tr>
+					<tr><td>8/19</td><td>接続者リストを表示、+bugfix</td></tr>
+					<tr><td>8/20</td><td>位置取得時の精度を向上、<br>メニューにデバッグ表示を追加、<br>+bugfix</td></tr>
 				</table>
 			</div>
 		</div>
@@ -40,13 +41,7 @@
 				<li id="menuClose" class="">メニューを閉じる</li>
 				<li id="route" class="item off">経路を表示</li>
 				<li id="myself" class="item on">自分を表示する</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
+				<li id="debug" class="off">デバッグ情報を表示する</li>
 				<li>（未設定）</li>
 				<li>（未設定）</li>
 				<li>（未設定）</li>
@@ -66,13 +61,27 @@
 			</div>
 		</div>
 	</div>
+	<div class="info hide">
+		<dl>
+			<dt>緯度(latitude)</dt><dd id="latitude"></dd>
+			<dt>経度(longitude)</dt><dd id="longitude"></dd>
+			<dt>精度(accuracy)</dt><dd id="accuracy"></dd>
+<!--
+			<dt>高度(altitude)</dt><dd id="altitude"></dd>
+			<dt>方向(heading)</dt><dd id="heading"></dd>
+			<dt>速度(speed)</dt><dd id="speed"></dd>
+-->
+			<dt>位置情報タイムスタンプ(timestamp)</dt><dd id="timestamp"></dd>
+		</dl>
+		<div>状態：<span></span></div>
+	</div>
 	<div id="map_canvas"></div>
 <script>
 $(function () {
 	// 地図とソケットを初期化
 	if(navigator.geolocation){
 		initMap(doClickMap);
-		initSocket();
+		initSocket(watchSuccess, watchError);
 	} else {
 		window.alert("対応外");
 	}
@@ -94,6 +103,12 @@ $(function () {
 	$('div.menu li.item').click(function () {
 		$(this).toggleClass('on').toggleClass('off');
 		emit_login();		
+	});
+
+	$('#debug').click(function () {
+		$(this).toggleClass('on').toggleClass('off');
+		$('div.info').toggleClass('hide');
+		$('#menuClose').click();
 	});
 });
 
@@ -118,6 +133,24 @@ function initMemberList(data) {
 // 接続者リストを追加
 function addMember(data) {
 	$('div.menu_list ul').append('<li>' + data.name + '</li>');
+}
+
+// 位置取得正常
+watchSuccess=function(pos) {
+	$('#latitude').text(pos.coords.latitude);
+	$('#longitude').text(pos.coords.longitude);
+	$('#accuracy').text(pos.coords.accuracy);
+	$('#altitude').text(pos.coords.altitude);
+	$('#heading').text(pos.coords.heading);
+	$('#speed').text(pos.coords.speed);
+	$('#timestamp').text(new Date(pos.timestamp));
+
+	$('div.info span').text("位置取得 成功");
+}
+
+// 位置取得失敗
+watchError=function(e) {
+	$('div.info span').text("位置取得 失敗: "+e.code+" "+e.message);
 }
 
 </script>
