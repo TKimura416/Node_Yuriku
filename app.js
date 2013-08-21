@@ -44,10 +44,11 @@ io.sockets.on('connection', function (socket) {
 	socket.on('login',function(data) {
 		console.log('log: login received');
 		if(data){
-			console.log('name=[' + data.name + ' latlng=[' + data.latlng + ']');
+			var name = sanitize(data.name).entityEncode();
+			console.log('name=[' + name + ' latlng=[' + data.latlng + ']');
 
 			// userlistに位置情報を追加
-			socket.set('data', {name: sanitize(data.name).entityEncode(), latlng: data.latlng});
+			socket.set('data', {name: name, latlng: data.latlng});
 		} else {
 			socket.set('data', data);
 		}
