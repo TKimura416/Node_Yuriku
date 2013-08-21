@@ -8,6 +8,7 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
+var sanitize = require('validator').sanitize;
 
 var app = express();
 
@@ -46,7 +47,7 @@ io.sockets.on('connection', function (socket) {
 			console.log('name=[' + data.name + ' latlng=[' + data.latlng + ']');
 
 			// userlistに位置情報を追加
-			socket.set('data', {name: data.name, latlng: data.latlng});
+			socket.set('data', {name: sanitize(data.name).entityEncode(), latlng: data.latlng});
 		} else {
 			socket.set('data', data);
 		}

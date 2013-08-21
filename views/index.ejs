@@ -116,6 +116,12 @@ $(function () {
 function doClickMap(e) {
 	var menu = $('div.menu');
 	menu.toggleClass('menuIn');
+
+	if (event.preventDefault) {
+		event.preventDefault();
+	} else if (event.returnValue) {
+		event.returnValue = false;
+	}
 }
 
 // 接続者リストをクリア
@@ -152,7 +158,6 @@ watchSuccess=function(pos) {
 watchError=function(e) {
 	$('div.info span').text("位置取得 失敗: "+e.code+" "+e.message);
 }
-
 </script>
 </body>
 </html>
