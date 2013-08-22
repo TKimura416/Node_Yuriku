@@ -11,6 +11,9 @@ html {
 .opacity0 {
 	opacity: 0;
 }
+.opacity1 {
+	opacity: 1;
+}
 .hide {
 	display: none;
 }
@@ -83,6 +86,12 @@ div.welcome span.emj:hover {
 
 #btn {
 	width: 80px;
+}
+
+div.info {
+	position: absolute;
+	z-index: 20;
+	background: rgba(255,255,255,.8);
 }
 
 div#map_canvas {
