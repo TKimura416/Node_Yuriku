@@ -12,18 +12,22 @@ function initSocket(callback) {
 	                console.log("member-geo received");
 	                //$('#disp').append(data.name);
 
+			// 受信したデータを読み込み
+			var data = JSON.parse(data);
+			console.log(data);
+
+			// 接続者リストを初期化
+			data = initMemberList(data);
+
 			// 地図上のマーカーを削除
 			clearMarker();
 
 			// 地図にマーカーを追加
-			var data = JSON.parse(data);
-			console.log(data);
 			data.forEach(function(d){
-				addMarker(d.name, d.latlng);
+				if(d.dispflg){
+					addMarker(d.name, d.latlng);
+				}
 			});
-
-			// 接続者リストを初期化
-			initMemberList(data);
 	        });
 
 	        // 自分の位置をサーバへ送信する

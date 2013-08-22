@@ -95,6 +95,13 @@ $(function () {
 		$(this).toggleClass('on').toggleClass('off');
 		emit_login();		
 	});
+
+	// メニュー：接続者リスト
+	$(document).on ('click', 'div.menu_list li.item', function() {
+		$(this).toggleClass('on').toggleClass('off');
+		emit_login();
+	});
+	
 });
 
 // mapクリックイベント
@@ -110,14 +117,47 @@ function clearMemberList() {
 
 // 接続者リストを初期化
 function initMemberList(data) {
+	data = saveMemberList(data);
 	clearMemberList();
 	var list = $('div.menu_list div').append('<ul></ul>');
 	data.forEach(addMember);
+	return data;
+}
+
+//接続リストの設定保存
+function saveMemberList(data){
+	//デフォルトの設定をonにする
+	data = data.map(function(d){d.dispflg=true;return d;});
+	$('div.menu_list li').each(function(){
+		var text = $(this).text();
+		if($(this).hasClass("on")){
+			data = data.map(function(d){
+				if(d.name == text){
+					d.dispflg = true;
+				}
+				return d;
+			})
+		}else{
+			data = data.map(function(d){
+				if(d.name == text){
+					d.dispflg = false;
+				}
+				return d;
+			})
+		}
+	});
+	return data;
 }
 
 // 接続者リストを追加
 function addMember(data) {
-	$('div.menu_list ul').append('<li>' + data.name + '</li>');
+	var classtext;
+	if(data.dispflg){
+		classtext = "item on";
+	} else {
+		classtext = "item off";
+	}
+	$('div.menu_list ul').append('<li class="' + classtext + '">' + data.name + '</li>');
 }
 
 </script>
