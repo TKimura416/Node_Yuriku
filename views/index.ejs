@@ -81,11 +81,17 @@
 $(function () {
 	// 地図とソケットを初期化
 	if(navigator.geolocation){
-		initMap(doClickMap);
+		map.initMap(doClickMap);
 		initSocket(watchSuccess, watchError);
 	} else {
 		window.alert("対応外");
 	}
+
+	// 自分の位置をサーバへ送信する
+        $('#btn').on('click', function() {
+		emit_login();
+		watchFlg = true;
+        });
 
 	// Welcomeボタンイベント
 	$('#btn').click(function(e) {

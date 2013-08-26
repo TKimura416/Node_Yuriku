@@ -1,10 +1,9 @@
 /*
  * WebSocket
  */
-
 var socket = io.connect();
+var watchFlg = false;
 function initSocket(onsuccess, onerror) {
-	var watchFlg = false;
 	if(navigator.geolocation){
 
 	        // "member-geoイベントを受信したら、その内容を表示する
@@ -20,21 +19,21 @@ function initSocket(onsuccess, onerror) {
 			data = initMemberList(data);
 
 			// 地図上のマーカーを削除
-			clearMarker();
+			map.clearMarker();
 
 			// 地図にマーカーを追加
 			data.forEach(function(d){
 				if(d.dispflg){
-					addMarker(d.name, d.latlng);
+					map.addMarker(d.name, d.latlng);
 				}
 			});
 	        });
 
 	        // 自分の位置をサーバへ送信する
-	        $('#btn').on('click', function() {
-			emit_login();
-			watchFlg = true;
-	        });
+	       // $('#btn').on('click', function() {
+		//	emit_login();
+		//	watchFlg = true;
+	        //});
 
 		var options = {
 			enableHighAccuracy: true,
@@ -44,7 +43,7 @@ function initSocket(onsuccess, onerror) {
 		navigator.geolocation.watchPosition(
 			function (pos) {
 				if(watchFlg){
-					watchMarker(pos);
+					map.watchMarker(pos);
 					emit_login();
 				}
 				if (onsuccess) {
@@ -74,13 +73,14 @@ function emit_login(){
 	if($('div.menu li#myself.on')[0]){
 		publicFlg = true;
 	}
-
 	// 公開設定になっていたらデータを送信
 	// そうでなければundefinedを送信
 	if (publicFlg){	
-		data = {name: name, latlng: currentLatLng};
+		data = {name: name, latlng: map.currentLatLng()};
+
 	} else {
 		data = undefined;
 	}
 	socket.emit("login", data)
 }
+
