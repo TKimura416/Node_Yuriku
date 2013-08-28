@@ -4,7 +4,7 @@
 var map = (function(){
 	// private variables	
 		var map;
-		var currentLatLng;
+		var currentLatLng = new Object();
 		var markerArray = [];
 
 	// global functions
@@ -23,7 +23,7 @@ var map = (function(){
 	        		// google map 読み込み
 	        		var mapOptions = {
 	                       		zoom: 13,
-	                        	center: currentLatLng,
+	                        	center: new google.maps.LatLng(currentLatLng.lat, currentLatLng.lng),
 	                        	mapTypeId: google.maps.MapTypeId.ROADMAP
 	        		}
 	        		map = new google.maps.Map($('#map_canvas')[0], mapOptions);
@@ -40,7 +40,7 @@ var map = (function(){
 		},
 
 		addMarker: function (name, latlng) {
-			if (!latlng || !latlng.mb || !latlng.nb) {
+			if (!latlng || !latlng.lat || !latlng.lng) {
 				return;
 			}
 
@@ -48,7 +48,7 @@ var map = (function(){
 				content: '<div>'+ name +'</div>'
 			});
 			var options = {
-				position: new google.maps.LatLng(latlng.mb, latlng.nb),
+				position: new google.maps.LatLng(latlng.lat, latlng.lng),
 				map: map,
 				draggable: true
 			};
@@ -71,10 +71,8 @@ var map = (function(){
 
 		watchMarker: function (pos) {
 			// 現在位置をcurrentLatLngへ読みこみ
-			var latlng = new google.maps.LatLng(
-				pos.coords.latitude, pos.coords.longitude);
-
-			currentLatLng = latlng;
+			currentLatLng.lat = pos.coords.latitude;
+			currentLatLng.lng = pos.coords.longitude;
 		}
 	}
 })();
