@@ -9,6 +9,7 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var sanitize = require('validator').sanitize;
+require('data');
 
 var app = express();
 
@@ -47,28 +48,39 @@ io.sockets.on('connection', function (socket) {
 			var name = sanitize(data.name).entityEncode();
 			console.log('name=[' + name + ' latlng=[' + data.latlng + ']');
 
-			// userlistに位置情報を追加
-			socket.set('data', {name: name, latlng: data.latlng});
+      //socket内にデータがあったら、位置情報を更新してsetする
+      //なかったら新しくデータを作ってsetする
+      var _data;
+      socket.get('data', function(err, get_data) {
+        if(get_data){
+          _data = get_data
+          _data.latlng = data.latlng;
+          _data.dispflg = data.dispflg;
+        } else {
+			    _data = new DATACLASS(socket.id, name, data.latlng, data.dispflg);
+        }
+      });
+			socket.set('data', _data);
+      socket.emit('member-geo', _data, function(_data){
+        console.log('log: member-geo execute');
+      });
+      //他の人のsocketにも自分の値をsetしてemit
+		  io.sockets.clients().forEach(function(socket){
+			  socket.get('data', function(err, data) {
+				  if(data){
+            if(data.id != _data.id){
+					    data.setData(_data);
+              socket.emit('member-geo', data, function(data){
+                console.log('log: member-geo execute');
+              });
+            }
+          }
+        })
+      });
+
 		} else {
 			socket.set('data', data);
 		}
-
-		var userlist = new Array();
-		var i = 0
-		io.sockets.clients().forEach(function(socket){
-			socket.get('data', function(err, data) {
-				if(data){
-					userlist[i] = data;
-					i++;
-				}
-			})
-		});
-		var dataArray = JSON.stringify(userlist);
-		
-		// 'member-geo'イベントを発生させる
-		io.sockets.emit('member-geo', dataArray, function(data){
-			console.log('log: member-geo execute');
-		});
 	});
 });
 

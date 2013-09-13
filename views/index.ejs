@@ -147,30 +147,28 @@ function initMemberList(data) {
 	data = saveMemberList(data);
 	clearMemberList();
 	var list = $('div.menu_list div').append('<ul></ul>');
-	data.forEach(addMember);
-	return data;
+  for(key in data.data){addMember(data.data[key])};
+  return data;
 }
 
 //接続リストの設定保存
 function saveMemberList(data){
 	//デフォルトの設定をonにする
-	data = data.map(function(d){d.dispflg=true;return d;});
-	$('div.menu_list li').each(function(){
+  for(key in data.data){data.data[key].dispflg = true}
+$('div.menu_list li').each(function(){
 		var text = $(this).text();
 		if($(this).hasClass("on")){
-			data = data.map(function(d){
-				if(d.name == text){
-					d.dispflg = true;
-				}
-				return d;
-			})
+      for(key in data.data){
+        if(data.data[key].name == text){
+          data.data[key].dispflg = true;
+        }
+      }
 		}else{
-			data = data.map(function(d){
-				if(d.name == text){
-					d.dispflg = false;
-				}
-				return d;
-			})
+      for(key in data.data){
+        if(data.data[key].name == text){
+          data.data[key].dispflg = false;
+        }
+      }
 		}
 	});
 	return data;

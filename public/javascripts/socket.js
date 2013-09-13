@@ -11,10 +11,6 @@ function initSocket(onsuccess, onerror) {
 	                console.log("member-geo received");
 	                //$('#disp').append(data.name);
 
-			// 受信したデータを読み込み
-			var data = JSON.parse(data);
-			console.log(data);
-
 			// 接続者リストを初期化
 			data = initMemberList(data);
 
@@ -22,12 +18,17 @@ function initSocket(onsuccess, onerror) {
 			map.clearMarker();
 
 			// 地図にマーカーを追加
-			data.forEach(function(d){
-				if(d.dispflg){
-					map.addMarker(d.name, d.latlng);
-				}
-			});
-	        });
+      if(data.dispflg){
+        map.addMarker(data.name, data.latlng);
+      }
+			for(key in data.data){
+        (function(data){
+				  if(data.dispflg){
+					  map.addMarker(data.name, data.latlng);
+				  }
+			  })(data.data[key])
+	    };
+      });
 
 	        // 自分の位置をサーバへ送信する
 	       // $('#btn').on('click', function() {
@@ -73,14 +74,8 @@ function emit_login(){
 	if($('div.menu li#myself.on')[0]){
 		publicFlg = true;
 	}
-	// 公開設定になっていたらデータを送信
-	// そうでなければundefinedを送信
-	if (publicFlg){	
-		data = {name: name, latlng: map.currentLatLng()};
-
-	} else {
-		data = undefined;
-	}
+	// データを送信
+		data = {name: name, latlng: map.currentLatLng(), dispflg: publicFlg};
 	socket.emit("login", data)
 }
 
