@@ -82,15 +82,15 @@ $(function () {
 	// 地図とソケットを初期化
 	if(navigator.geolocation){
 		map.initMap(doClickMap);
-		initSocket(watchSuccess, watchError);
+		socket.initSocket(watchSuccess, watchError);
 	} else {
 		window.alert("対応外");
 	}
 
 	// 自分の位置をサーバへ送信する
         $('#btn').on('click', function() {
-		emit_login();
-		watchFlg = true;
+		socket.emit_login();
+		socket.setWatchFlg = true;
         });
 
 	// Welcomeボタンイベント
@@ -109,13 +109,13 @@ $(function () {
 	// メニュー：選択
 	$('div.menu li.item').click(function () {
 		$(this).toggleClass('on').toggleClass('off');
-		emit_login();		
+		socket.emit_login();		
 	});
 
 	// メニュー：接続者リスト
 	$(document).on ('click', 'div.menu_list li.item', function() {
 		$(this).toggleClass('on').toggleClass('off');
-		emit_login();
+		socket.emit_login();
 	});
 	
 	$('#debug').click(function () {
