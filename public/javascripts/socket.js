@@ -1,86 +1,80 @@
 /*
  * WebSocket
  */
-var socket = io.connect();
-var watchFlg = false;
-function initSocket(onsuccess, onerror) {
-	if(navigator.geolocation){
+var socket = (function(){
+  //private variables
+  var socket = io.connect();
+  var watchFlg = false;
 
-	        // "member-geoイベントを受信したら、その内容を表示する
-	        socket.on('member-geo', function(data, fn) {
-	                console.log("member-geo received");
-	                //$('#disp').append(data.name);
+  // Global functions
+  return {
+    setWatchFlg: function(value){watchFlg = value},
+    initSocket: function(onsuccess, onerror){
+	    if(navigator.geolocation){
+	      // "member-geoイベントを受信したら、その内容を表示する
+	      socket.on('member-geo', function(data, fn) {
+	        console.log("member-geo received");
+	        //$('#disp').append(data.name);
 
-			// 受信したデータを読み込み
-			var data = JSON.parse(data);
-			console.log(data);
+			    // 接続者リストを初期化
+			    data = initMemberList(data);
 
-			// 接続者リストを初期化
-			data = initMemberList(data);
+			    // 地図上のマーカーを削除
+			    map.clearMarker();
 
-			// 地図上のマーカーを削除
-			map.clearMarker();
+			    // 地図にマーカーを追加
+          if(data.dispflg){
+            map.addMarker(data.name, data.latlng);
+          }
+			    for(key in data.data){
+            (function(data){
+				      if(data.dispflg){
+					      map.addMarker(data.name, data.latlng);
+				      }
+			      })(data.data[key])
+	        };
+        });
 
-			// 地図にマーカーを追加
-			data.forEach(function(d){
-				if(d.dispflg){
-					map.addMarker(d.name, d.latlng);
-				}
-			});
-	        });
-
-	        // 自分の位置をサーバへ送信する
-	       // $('#btn').on('click', function() {
-		//	emit_login();
-		//	watchFlg = true;
-	        //});
-
-		var options = {
-			enableHighAccuracy: true,
-			timeout: 1000,
-			maximumAge: 1000
-		};
-		navigator.geolocation.watchPosition(
-			function (pos) {
-				if(watchFlg){
-					map.watchMarker(pos);
-					emit_login();
-				}
-				if (onsuccess) {
-					onsuccess(pos);
-				}
-			},
-			function (e) {
-				if (onerror) {
-					onerror(e);
-				} else if (console) {
-					console.log(e.code + " " + e.message);
-				}
-			},
-			options
-		);
-	} else {
-	        window.alert("対応外");
-	}
-}
-
-function emit_login(){
-	var name = $('#cocoName').val() || '名無しのゴンベさん';
-	var data;
-	var publicFlg = false;
+		    var options = {
+			    enableHighAccuracy: true,
+			    timeout: 1000,
+			    maximumAge: 1000
+		    };
+		    navigator.geolocation.watchPosition(
+			    function (pos) {
+				    if(watchFlg){
+					    map.watchMarker(pos);
+					    emit_login();
+			  	  }
+				    if (onsuccess) {
+					    onsuccess(pos);
+				    }
+			    },
+			    function (e) {
+				    if (onerror) {
+					    onerror(e);
+				    } else if (console) {
+					    console.log(e.code + " " + e.message);
+				    }
+			    },
+			    options
+		    );
+	    } else {
+	      window.alert("対応外");
+	    }
+    },
+    emit_login: function(){
+	    var name = $('#cocoName').val() || '名無しのゴンベさん';
+	    var data;
+	    var publicFlg = false;
 	
-	//自分の公開設定を確認
-	if($('div.menu li#myself.on')[0]){
-		publicFlg = true;
-	}
-	// 公開設定になっていたらデータを送信
-	// そうでなければundefinedを送信
-	if (publicFlg){	
-		data = {name: name, latlng: map.currentLatLng()};
-
-	} else {
-		data = undefined;
-	}
-	socket.emit("login", data)
-}
-
+	    //自分の公開設定を確認
+	    if($('div.menu li#myself.on')[0]){
+		    publicFlg = true;
+	    }
+	    // データを送信
+		  data = {name: name, latlng: map.currentLatLng(), dispflg: publicFlg};
+	    socket.emit("login", data)
+    }
+  }
+})();
