@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="/stylesheets/style.css" />
 <link rel="stylesheet" href="/stylesheets/style_portrait.css" />
 <link rel="stylesheet" href="/stylesheets/menu.css" />
+<link rel="stylesheet" href="/stylesheets/symbols.css" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCW8z6OyEs30ngb3S1o5cgW0g3x2e5POQU&sensor=true&language=ja"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -22,8 +23,20 @@
 			<h2>アナタドコ？<br>イマココ<br>ミンナドコ？</h2>
 			<p>Welcome to <%= title %></p>
 			<div id='disp'>
+				<div class="selectIcon">
+					<p>アイコンを選択してください。</p>
+					<p class="symbol-normal" rel="普通"></p>
+					<p class="symbol-lady" rel="女性"></p>
+					<p class="symbol-megane" rel="眼鏡"></p>
+					<p class="symbol-angry" rel="憤怒"></p>
+					<p class="symbol-dog" rel="犬"></p>
+					<p class="symbol-alien" rel="宇宙人"></p>
+					<p class="symbol-ghost" rel="幽霊"></p>
+					<p class="symbol-zombie" rel="ゾンビー"></p><br>
+				</div>
 				<input type="text" id="cocoName" value="" placeholder="名前を入れてください">
-				<input type='button', id='btn', value='OK'>
+				<input type='button' id='btnFree' value='フリーマップで表示'>
+				<input type='button' id='btnPrivate' value='プライベートマップで表示'>
 			</div>
 			<div>
 				<p>更新履歴：</p>
@@ -40,15 +53,9 @@
 		<div class="menu_setting">
 			<ul>
 				<li id="menuClose" class="">メニューを閉じる</li>
-				<li id="route" class="item off">経路を表示</li>
+				<li id="route" class="item off">経路を表示（未実装）</li>
 				<li id="myself" class="item on">自分を表示する</li>
 				<li id="debug" class="off">デバッグ情報を表示する</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
-				<li>（未設定）</li>
 				<li>（未設定）</li>
 				<li>（未設定）</li>
 			</ul>
@@ -88,13 +95,18 @@ $(function () {
 	}
 
 	// 自分の位置をサーバへ送信する
-        $('#btn').on('click', function() {
+  $('#btnFree').on('click', function() {
 		emit_login();
 		watchFlg = true;
-        });
+  });
+
+	// アイコンを選択
+	$('div.selectIcon p').click(function(e) {
+		console.log('select icon');
+	});
 
 	// Welcomeボタンイベント
-	$('#btn').click(function(e) {
+	$('#btnFree').click(function(e) {
 		var div = $('div.welcome').addClass('opacity0');
 		setTimeout(function() {
 			div.addClass('hide');

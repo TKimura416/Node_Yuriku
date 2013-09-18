@@ -1,0 +1,18 @@
+[class*=symbol-] {
+	width: 32px;
+	height: 32px;
+	background: url(/images/symbols.png) no-repeat top left;
+}
+p[class*=symbol-] {
+	float: left;
+}
+
+.symbol-normal{ background-position: 0 0; } 
+.symbol-lady{ background-position: 0 -33px; } 
+.symbol-megane{ background-position: 0 -66px; } 
+.symbol-angry{ background-position: 0 -99px; } 
+.symbol-dog{ background-position: 0 -132px; } 
+.symbol-alien{ background-position: 0 -165px; } 
+.symbol-ghost{ background-position: 0 -198px; } 
+.symbol-zombie{ background-position: 0 -231px; } 
+

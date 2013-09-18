@@ -84,6 +84,24 @@ div.welcome span.emj:hover {
 	background: #797979;
 }
 
+div.selectIcon [class*=symbol-] {
+	-webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .5s ease-in-out;
+	-o-transition: all .5s ease-in-out;
+	transition: all .3s ease-in-out;
+}
+div.selectIcon [class*=symbol-]:hover {
+	-webkit-transform: scale(1.3, 1.3);
+	-moz-transform: scale(1.3, 1.3);
+	-o-transform: scale(1.3, 1.3);
+	transform: scale(1.3, 1.3);
+}
+div.selectIcon [class*=symbol-]:hover:before {
+	content: attr(rel);
+	color: black;
+	background: rgba(250,250,250,.8);
+}
+
 #btn {
 	width: 80px;
 }
