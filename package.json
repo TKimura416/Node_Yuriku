@@ -3,10 +3,16 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node app"
   },
   "dependencies": {
-    "express": "3.3.5",
-    "ejs": "*"
+    "express": "*",
+    "jade": "*",
+    "express-validator": "*",
+    "morgan": "*",
+    "method-override": "*",
+    "errorhandler": "*",
+    "socket.io": "*",
+    "body-parser": "*"
   }
 }

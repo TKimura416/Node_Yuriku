@@ -1,0 +1,220 @@
+doctype html
+html
+  head
+    meta(name="viewport", content="width=device-width")
+    title= title
+    link(href="/stylesheets/style.css" rel="stylesheet")
+    link(href="/stylesheets/style_portrait.css" rel="stylesheet")
+    link(href="/stylesheets/menu.css" rel="stylesheet")
+    link(href="/stylesheets/symbols.css" rel="stylesheet")
+    script(src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js")
+    script(src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCW8z6OyEs30ngb3S1o5cgW0g3x2e5POQU&sensor=true&language=ja")
+    script(src="/socket.io/socket.io.js")
+    script(src="/javascripts/map.js")
+    script(src="/javascripts/socket.js")
+
+  body
+  .welcome
+    .header
+      h1 IMA-COKO
+    div
+      h2
+        | アナタドコ？
+        br
+        | イマココ
+        br
+        | ミンナドコ？
+      h2
+      p Welcome to #{title}
+      #disp
+        .selectIcon
+          p アイコンを選択してください。
+          p.symbol-normal(rel="普通")
+          p.symbol-lady(rel="女性")
+          p.symbol-megane(rel="眼鏡")
+          p.symbol-angry(rel="憤怒")
+          p.symbol-dog(rel="犬")
+          p.symbol-alien(rel="宇宙人")
+          p.symbol-ghost(rel="幽霊")
+          p.symbol-zombie(rel="ゾンビー")
+          br
+        input#cocoName(type="text", value="", placeholder="名前を入れてください")
+        input#btnFree(type='button', value='フリーマップで表示')
+        input#btnPrivate(type='button', value='プライベートマップで表示')
+      div
+        p 更新履歴：
+        table(border="1")
+          tr
+            td 8/15
+            td サービスイン
+          tr
+            td 8/19
+            td 接続者リストを表示、+bugfix
+          tr
+            td 8/20
+            td |位置取得時の精度を向上、
+              br
+              |メニューにデバッグ表示を追加、
+              br
+              |+bugfix
+          tr
+            td 8/21
+            td xss対策のため、名前のサニタイジング処理を追加
+  .menu
+    .menu_setting
+      ul
+        li#menuClose メニューを閉じる
+        li#route.item.off 経路を表示（未実装）
+        li#myself.item.on 自分を表示する
+        li#debug.off デバッグ情報を表示する
+        li （未設定）
+        li （未設定）
+    .menu_list
+      p 接続者リスト
+      .inner
+        ul
+          li 接続者
+  .info.hide
+    dl
+      dt 緯度(latitude)
+      dd#latitude
+      dt 経度(longitude)
+      dd#longitude
+      dt 精度(accuracy)
+      dd#accuracy
+      dt 位置情報タイムスタンプ(timestamp)
+      dd#timestamp
+    div 状態：
+    span
+  #map_canvas
+
+  script(type='text/javascript').
+    $(function () {
+      // 地図とソケットを初期化
+      if(navigator.geolocation){
+        map.initMap(doClickMap);
+        socket.initSocket(watchSuccess, watchError);
+      } else {
+        window.alert("対応外");
+      }
+
+      // 自分の位置をサーバへ送信する
+      $('#btnFree').on('click', function() {
+        socket.emit_login();
+        socket.setWatchFlg = true;
+      });
+
+      // アイコンを選択
+      $('div.selectIcon p').click(function(e) {
+        console.log('select icon');
+      });
+
+      // Welcomeボタンイベント
+      $('#btnFree').click(function(e) {
+        var div = $('div.welcome').addClass('opacity0');
+        setTimeout(function() {
+          div.addClass('hide');
+        }, 500);
+      });
+
+      // メニュー：閉じる
+      $('#menuClose').click(function() {
+        $('div.menu').removeClass('menuIn');
+      });
+
+      // メニュー：選択
+      $('div.menu li.item').click(function () {
+        $(this).toggleClass('on').toggleClass('off');
+        socket.emit_login();
+      });
+
+      // メニュー：接続者リスト
+      $(document).on ('click', 'div.menu_list li.item', function() {
+        $(this).toggleClass('on').toggleClass('off');
+        socket.emit_login();
+      });
+
+      $('#debug').click(function () {
+        $(this).toggleClass('on').toggleClass('off');
+        $('div.info').toggleClass('hide');
+        $('#menuClose').click();
+      });
+    });
+
+    // mapクリックイベント
+    function doClickMap(e) {
+      var menu = $('div.menu');
+      menu.toggleClass('menuIn');
+
+      if (event.preventDefault) {
+        event.preventDefault();
+      } else if (event.returnValue) {
+        event.returnValue = false;
+      }
+    }
+
+    // 接続者リストをクリア
+    function clearMemberList() {
+      $('div.menu_list').html('<p>接続者リスト</p><div></div>');
+    }
+
+    // 接続者リストを初期化
+    function initMemberList(data) {
+      data = saveMemberList(data);
+      clearMemberList();
+      var list = $('div.menu_list div').append('<ul></ul>');
+      for(key in data.data){addMember(data.data[key])};
+      return data;
+    }
+
+    //接続リストの設定保存
+    function saveMemberList(data){
+      //デフォルトの設定をonにする
+      for(key in data.data){data.data[key].dispflg = true}
+    $('div.menu_list li').each(function(){
+        var text = $(this).text();
+        if($(this).hasClass("on")){
+          for(key in data.data){
+            if(data.data[key].name == text){
+              data.data[key].dispflg = true;
+            }
+          }
+        }else{
+          for(key in data.data){
+            if(data.data[key].name == text){
+              data.data[key].dispflg = false;
+            }
+          }
+        }
+      });
+      return data;
+    }
+
+    // 接続者リストを追加
+    function addMember(data) {
+      var classtext;
+      if(data.dispflg){
+        classtext = "item on";
+      } else {
+        classtext = "item off";
+      }
+      $('div.menu_list ul').append('<li class="' + classtext + '">' + data.name + '</li>');
+    }
+
+    // 位置取得正常
+    watchSuccess=function(pos) {
+      $('#latitude').text(pos.coords.latitude);
+      $('#longitude').text(pos.coords.longitude);
+      $('#accuracy').text(pos.coords.accuracy);
+      $('#altitude').text(pos.coords.altitude);
+      $('#heading').text(pos.coords.heading);
+      $('#speed').text(pos.coords.speed);
+      $('#timestamp').text(new Date(pos.timestamp));
+
+      $('div.info span').text("位置取得 成功");
+    }
+
+    // 位置取得失敗
+    watchError=function(e) {
+      $('div.info span').text("位置取得 失敗: "+e.code+" "+e.message);
+    }

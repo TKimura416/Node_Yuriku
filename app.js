@@ -8,25 +8,28 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
-var sanitize = require('validator').sanitize;
-require('data');
+var sanitize = require('express-validator');
+var bodyParser = require('body-parser');
+var morgan = require('morgan');
+var methodOverride = require('method-override');
+var errorHandler = require('errorhandler');
+require('./data.js');
 
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || 3001);
+app.set('port', process.env.PORT || 1337);
 app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(app.router);
+app.set('view engine', 'jade');
+app.use(morgan("dev"));
+app.use(bodyParser());
+app.use(methodOverride());
+app.use(sanitize());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+  app.use(errorHandler());
 }
 
 app.get('/', routes.index);
@@ -45,41 +48,44 @@ io.sockets.on('connection', function (socket) {
 	socket.on('login',function(data) {
 		console.log('log: login received');
 		if(data){
-			var name = sanitize(data.name).entityEncode();
+			var name = data.name;
 			console.log('name=[' + name + ' latlng=[' + data.latlng + ']');
 
       //socket内にデータがあったら、位置情報を更新してsetする
       //なかったら新しくデータを作ってsetする
       var _data;
-      socket.get('data', function(err, get_data) {
-        if(get_data){
-          _data = get_data
-          _data.latlng = data.latlng;
-          _data.dispflg = data.dispflg;
-        } else {
-			    _data = new DATACLASS(socket.id, name, data.latlng, data.dispflg);
-        }
-      });
-			socket.set('data', _data);
+      _data = socket.data;
+      if(_data){
+        _data.latlng = data.latlng;
+        _data.dispflg = data.dispflg;
+      } else {
+        _data = new DATACLASS(socket.id, name, data.latlng, data.dispflg);
+      }
+
+      socket.data = _data;
+
       socket.emit('member-geo', _data, function(_data){
         console.log('log: member-geo execute');
       });
       //他の人のsocketにも自分の値をsetしてemit
-		  io.sockets.clients().forEach(function(socket){
-			  socket.get('data', function(err, data) {
-				  if(data){
-            if(data.id != _data.id){
-					    data.setData(_data);
-              socket.emit('member-geo', data, function(data){
-                console.log('log: member-geo execute');
-              });
+      var room = io.sockets.adapter.rooms[socket.rooms]
+      if (room) {
+          for (var id in room) {
+            socket = io.sockets.adapter.nsp.connected[id];
+            data = socket.data
+            if(data){
+              if(data.id != _data.id){
+                data.setData(_data);
+                socket.emit('member-geo', data, function(data){
+                  console.log('log: member-geo execute');
+                });
+              }
             }
           }
-        })
-      });
+      }
 
 		} else {
-			socket.set('data', data);
+			socket.data = data;
 		}
 	});
 });
